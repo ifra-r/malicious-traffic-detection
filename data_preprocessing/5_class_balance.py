@@ -4,7 +4,6 @@
 
 # Saves the balanced dataset as a new file.
 
-
 import pandas as pd
 
 def check_and_balance_class(csv_path, target_column, output_path="data/3_balanced_data.csv", tolerance=5):
