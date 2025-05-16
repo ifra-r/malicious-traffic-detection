@@ -32,5 +32,5 @@ def explore_dataset(file_path, max_unique_display=10):
 
 if __name__ == "__main__":
     # Change the path to your CSV file
-    csv_path = "data/csic_raw.csv"
+    csv_path = "/home/kay/Documents/Workspace-S25/AI/Web Attacks/Web-attack-detection/data/csic_raw.csv"
     explore_dataset(csv_path)
