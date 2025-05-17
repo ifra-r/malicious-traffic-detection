@@ -91,11 +91,66 @@
 
 ---
 
-## 📦 Final Dataset State (Khadijah's Version)
+## Final Dataset Summary:
 
-* `classification` fixed as integer type
-* `content_tokens`, `url_path`, `url_query` extracted from `URL`
-* Categorical columns encoded: `Method`, `host`, `connection`
-* Clean URLs (no trailing HTTP suffixes)
-* Stratified split done: train, val, test sets created and saved
+    Shape: (49336, 11)
 
+    Data types: All columns are int64
+
+### Sample Data (First 5 Rows):
+classification	num_params	Method_GET	Method_POST	connection_Connection: close	connection_close	url_ext_css	url_ext_gif	url_ext_jpg	url_ext_jsp	url_ext_none
+1	0	0	1	1	0	0	0	0	1	0
+1	0	0	1	1	0	0	0	0	1	0
+1	0	1	0	0	1	0	0	0	0	0
+0	0	1	0	0	1	1	0	0	0	0
+0	0	1	0	0	1	0	0	0	1	0
+🔍 Column-Wise Value Distributions:
+
+Below are the frequency counts for each feature:
+
+classification
+1    24668
+0    24668
+------------------------
+num_params
+0     34190
+1      4851
+5      4143
+13     4118
+3      2034
+------------------------
+Method_GET
+1    34269
+0    15067
+------------------------
+Method_POST
+0    34269
+1    15067
+------------------------
+connection_Connection: close
+0    34269
+1    15067
+------------------------
+connection_close
+1    34269
+0    15067
+------------------------
+url_ext_css
+0    48659
+1      677
+------------------------
+url_ext_gif
+0    45447
+1     3889
+------------------------
+url_ext_jpg
+0    46589
+1     2747
+------------------------
+url_ext_jsp
+1    37450
+0    11886
+------------------------
+url_ext_none
+0    48456
+1      880

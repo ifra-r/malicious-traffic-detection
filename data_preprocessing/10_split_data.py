@@ -11,7 +11,7 @@ def split_data(df, target_col='classification'):
     print(f"Train size: {len(train)}, Val size: {len(val)}, Test size: {len(test)}")
 
 if __name__ == "__main__":
-    df = pd.read_csv("../data/7_encoded.csv")  # Load from step 5
+    df = pd.read_csv("../data/12_final_dataset.csv")  # Load from step 5
     split_data(df)
 
 
