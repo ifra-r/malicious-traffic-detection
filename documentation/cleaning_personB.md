@@ -90,6 +90,59 @@
   ```
 
 ---
+Got it! Here’s the **updated markdown** file with descriptions added for the three scripts you shared, following the same pattern/style as your existing entries:
+
+---
+
+## ✅ 11. URL Cleaning and Feature Extraction
+
+* **Loaded** `6_reprocess_url.csv`.
+* **Cleaned** HTTP protocol suffixes (e.g., removed `HTTP/1.1`) from the `URL` column.
+* **Extracted** new features from URL:
+
+  * `url_path` (path part of the URL).
+  * `url_query` (query string).
+  * `url_ext` (file extension from the path, or 'none' if absent).
+  * `num_params` (count of query parameters).
+* **Saved** the updated dataset as `11_model_ready.csv`.
+* ✅ Output shape:
+
+  ```
+  (49336, 11)
+  ```
+
+---
+
+## ✅ 12. Dataset Loading and Inspection
+
+* **Loaded** the final dataset from `12_final_dataset.csv`.
+* **Checked** dataset shape and data types.
+* **Identified** columns with only one unique value (none found).
+* **Generated** frequency counts for all columns to verify data distribution.
+* ✅ Output shape and type summary:
+
+  ```
+  Shape: (49336, 46)
+  Data types: 44 bool, 2 int64 columns
+  ```
+
+---
+
+## ✅ 13. Column-Wise Value Counts Reporting
+
+* **Iterated** over each column in the dataset.
+* **Printed** value counts including for boolean and integer columns.
+* **Verified** the balanced distribution of classification and feature columns.
+* **Confirmed** no columns with only one unique value (all useful features).
+* ✅ Sample output for `classification` column:
+
+  ```
+  1    24668
+  0    24668
+  Name: classification, dtype: int64
+  ```
+
+---
 
 ## Final Dataset Summary:
 
