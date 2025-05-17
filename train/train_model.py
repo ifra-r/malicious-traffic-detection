@@ -11,11 +11,10 @@ from models.logistic_regression import LogisticRegressionModel  # ← Use this n
 import csv
 import os
 # Load dataset
-data = pd.read_csv("../data/8_train.csv")
+data = pd.read_csv("../data/12_final_dataset.csv")
 
-# Features and labels
-X = data.iloc[:, :-1].values
-y = data.iloc[:, -1].values.reshape(-1, 1)  # shape: (n_samples, 1)
+X = data.iloc[:, 1:].values        # all columns except the first
+y = data.iloc[:, 0].values.reshape(-1, 1)  # the first column is the label
 
 # Split into train/val/test
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)

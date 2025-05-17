@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("../data/12_final_dataset.csv")
+df = pd.read_csv("../data/10_test.csv")
 print(df.shape)          # Should print (rows, 46)
 print(df.dtypes.value_counts())  # Should show how many bool, int, etc.
 print(df.head())

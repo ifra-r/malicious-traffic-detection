@@ -17,7 +17,7 @@ with open("../train/results/logistic_model.pkl", "rb") as f:
     model = pickle.load(f)
 
 # Load dataset
-data = pd.read_csv("../data/10_test.csv")
+data = pd.read_csv("../data/12_final_dataset.csv")
 X = data.iloc[:, :-1].values
 y = data.iloc[:, -1].values
 
