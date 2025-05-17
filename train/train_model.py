@@ -11,7 +11,7 @@ from models.logistic_regression import LogisticRegressionModel  # ← Use this n
 import csv
 import os
 # Load dataset
-data = pd.read_csv("../data/12_final_dataset.csv")
+data = pd.read_csv("../data/8_train.csv")
 
 # Features and labels
 X = data.iloc[:, :-1].values

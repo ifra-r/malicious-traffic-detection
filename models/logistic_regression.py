@@ -4,8 +4,10 @@
 # backward: Compute gradients (loss wrt weights and bias)
 # update_params: Update weights using gradients and learning rate
 # predict: Use learned weights to predict outputs
-
 import numpy as np
+from sklearn.linear_model import LogisticRegression
+from utils.loss import binary_cross_entropy
+from utils.metrics import accuracy
 from utils.activations import sigmoid
 
 class LogisticRegressionModel:
@@ -45,6 +47,24 @@ class LogisticRegressionModel:
         probs = self.forward(X)
         return (probs >= 0.5).astype(int)
 
+    
+    def evaluate(self, data_loader):
+        all_preds = []
+        all_labels = []
+
+        for X_batch, y_batch in data_loader:
+            preds = self.predict(X_batch)
+            all_preds.extend(preds.flatten())
+            all_labels.extend(y_batch.flatten())
+
+        all_preds = np.array(all_preds)
+        all_labels = np.array(all_labels)
+
+        loss = binary_cross_entropy(all_labels, all_preds)
+        acc = accuracy(all_labels, all_preds) * 100
+        return loss, acc
+
+    
 # In training, for each batch:
 # forward → get predictions
 # backward → calculate gradients
