@@ -1,7 +1,7 @@
 
 # CSIC 2010 Dataset Preprocessing – Khadijah’s Step Summary
 
-## ✅ 6. Target Column Fix
+## ✅ 6. Target Column Fix 
 
 * **Loaded** `3_balanced_data.csv` (pre-balanced dataset).
 * **Converted** `classification` column from string to integer.
