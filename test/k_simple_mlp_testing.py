@@ -4,7 +4,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from models.mlp.SimpleMLP import SimpleMLP  # Your model class
+from train_and_test.simple_mlp import SimpleMLP  # Your model class
 
 # Import your metrics or define here
 def precision(y_true, y_pred):
