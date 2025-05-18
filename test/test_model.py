@@ -17,9 +17,10 @@ with open("../train/results/logistic_model.pkl", "rb") as f:
     model = pickle.load(f)
 
 # Load dataset
-data = pd.read_csv("../data/12_final_dataset.csv")
-X = data.iloc[:, :-1].values
-y = data.iloc[:, -1].values
+data = pd.read_csv("../data/10_test.csv")
+
+X = data.iloc[:, 1:].values        # all columns except the first
+y = data.iloc[:, 0].values.reshape(-1, 1)  # the first column is the label
 
 # Split data again (same way as training)
 from sklearn.model_selection import train_test_split
