@@ -1,6 +1,12 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import os
+import pickle
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from utils.metrics import precision, recall
 
 class MLPModel:
     def __init__(self, input_dim, hidden_dim, output_dim):
@@ -39,9 +45,6 @@ class MLPModel:
         dW1 = np.dot(X.T, dz1) / m
         db1 = np.sum(dz1, axis=0, keepdims=True) / m
 
-        # Optional: print mean gradients for debugging
-        # print("mean |dW1|", np.mean(np.abs(dW1)), "|dW2|", np.mean(np.abs(dW2)))
-
         self.W1 -= learning_rate * dW1
         self.b1 -= learning_rate * db1
         self.W2 -= learning_rate * dW2
@@ -50,13 +53,11 @@ class MLPModel:
 
 def train(model, X_train, y_train, X_val=None, y_val=None, epochs=50, lr=0.01):
     for epoch in range(epochs):
-        # Forward + Backprop
         y_pred = model.forward(X_train)
         loss = model.compute_loss(y_train, y_pred)
         model.backward(X_train, y_train, learning_rate=lr)
         train_acc = accuracy(y_train, y_pred)
 
-        # Optional: Validation
         if X_val is not None and y_val is not None:
             y_val_pred = model.forward(X_val)
             val_loss = model.compute_loss(y_val, y_val_pred)
@@ -70,41 +71,59 @@ def accuracy(y_true, y_pred):
     y_pred_labels = (y_pred > 0.5).astype(int)
     return np.mean(y_pred_labels == y_true) * 100
 
+from sklearn.metrics import confusion_matrix
+
+
 def evaluate(model, X_test, y_test):
     y_pred = model.forward(X_test)
     test_loss = model.compute_loss(y_test, y_pred)
     test_acc = accuracy(y_test, y_pred)
+
+    # Calculate precision, recall, f1
+    prec = precision(y_test, y_pred)
+    rec = recall(y_test, y_pred)
+    f1 = 2 * (prec * rec) / (prec + rec + 1e-9)
+
     print(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2f}%")
+    print(f"Precision: {prec:.4f}, Recall: {rec:.4f}, F1 Score: {f1:.4f}")
+
+    # Optionally, print confusion matrix as before (you have code for that)
+    y_pred_labels = (y_pred >= 0.5).astype(int)
+    from sklearn.metrics import confusion_matrix
+    cm = confusion_matrix(y_test, y_pred_labels)
+    print("Confusion Matrix:")
+    print(cm)
+
     return test_loss, test_acc
 
-print("=========== DEEP mlp ===========")
-
-# Load data
-data = pd.read_csv('data/cleaned/4_remove_features.csv')  
 
 
-X = data.iloc[:, :-1].values.astype(np.float32)   # all columns except last one as features
-y = data.iloc[:, -1].values.reshape(-1, 1).astype(np.float32)  # last column as label
+def main():
+    print("=========== DEEP mlp ===========")
 
-# Split into train (64%), validation (16%), and test (20%)
-X_temp, X_test, y_temp, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-X_train, X_val, y_train, y_val = train_test_split(X_temp, y_temp, test_size=0.2, random_state=42)  # 0.2 of 0.8 = 0.16
+    # Load data
+    data = pd.read_csv('../data/cleaned/4_remove_features.csv')  
 
-# Create model
-model = MLPModel(input_dim=X_train.shape[1], hidden_dim=64, output_dim=1)
+    X = data.iloc[:, :-1].values.astype(np.float32)
+    y = data.iloc[:, -1].values.reshape(-1, 1).astype(np.float32)
 
-# Train with validation
-train(model, X_train, y_train, X_val, y_val, epochs=50, lr=0.01)
+    # Split data
+    X_temp, X_test, y_temp, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(X_temp, y_temp, test_size=0.2, random_state=42)
 
-# Final evaluation on test data
-evaluate(model, X_test, y_test)
+    # Create and train model
+    model = MLPModel(input_dim=X_train.shape[1], hidden_dim=64, output_dim=1)
+    train(model, X_train, y_train, X_val, y_val, epochs=50, lr=0.01)
+
+    # Evaluate on test data
+    evaluate(model, X_test, y_test)
+
+    # Save model
+    os.makedirs("results", exist_ok=True)
+    with open("../results/k_deep_mlp.pkl", "wb") as f:
+        pickle.dump(model, f)
+    print("Model saved to results/deep_mlp.pkl")
 
 
-# Create results folder if it doesn't exist
-import os
-os.makedirs("results", exist_ok=True)
-import pickle
-# Save model
-with open("results/deep_mlp.pkl", "wb") as f:
-    pickle.dump(model, f)
-print("Model saved to results/deep_mlp.pkl")
+if __name__ == "__main__":
+    main()

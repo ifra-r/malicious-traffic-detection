@@ -39,7 +39,7 @@ def main():
     print("=========== simple mlp  train n test ===========\n")
 
     # data = pd.read_csv('data/cleaned/4_remove_features.csv')  # Adjust path if needed
-    data = pd.read_csv('data/cleaned/se.csv')  # Adjust path if needed
+    data = pd.read_csv('../data/cleaned/se.csv')  # Adjust path if needed
 
     X = data.iloc[:, :-1].values.astype(np.float32)   # all columns except last one as features
     y = data.iloc[:, -1].values.reshape(-1, 1).astype(np.float32)  # last column as label
@@ -60,7 +60,7 @@ def main():
 
     import pickle
     # Save model
-    with open("results/simple_mlp.pkl", "wb") as f:
+    with open("../results/simple_mlp.pkl", "wb") as f:
         pickle.dump(model, f)
 
     print("Model saved to results/simple_mlp.pkl")
