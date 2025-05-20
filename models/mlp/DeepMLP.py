@@ -1,52 +1,82 @@
+""" 
+
+ MLPModel: A simple feedforward neural network built from scratch using NumPy.
+
+ - Architecture: 
+        One hidden layer with Leaky ReLU
+        output layer with Sigmoid.
+
+ - Includes: 
+        He initialization
+        forward propagation
+        loss computation (binary cross-entropy)
+        backpropagation.
+
+ - Use: Binary classification tasks.
+
+ - Optional training and evaluation code provided (commented out).
+
+"""
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
 class MLPModel:
     def __init__(self, input_dim, hidden_dim, output_dim):
+        # Initialize weights using He initialization for better convergence
         self.W1 = np.random.randn(input_dim, hidden_dim) * np.sqrt(2. / input_dim)  # He init
         self.b1 = np.zeros((1, hidden_dim))
         self.W2 = np.random.randn(hidden_dim, output_dim) * np.sqrt(2. / hidden_dim)
         self.b2 = np.zeros((1, output_dim))
 
     def leaky_relu(self, z):
+        # Leaky ReLU activation to avoid dying ReLU problem
         return np.where(z > 0, z, 0.01 * z)
 
     def leaky_relu_derivative(self, z):
+        # Derivative of Leaky ReLU for backpropagation
         return np.where(z > 0, 1, 0.01)
 
     def sigmoid(self, z):
+        # Sigmoid activation for output layer (binary classification)
         return 1 / (1 + np.exp(-z))
 
     def forward(self, X):
-        self.z1 = np.dot(X, self.W1) + self.b1
-        self.a1 = self.leaky_relu(self.z1)
-        self.z2 = np.dot(self.a1, self.W2) + self.b2
-        self.a2 = self.sigmoid(self.z2)
+         # Forward pass: compute hidden and output activations
+        self.z1 = np.dot(X, self.W1) + self.b1    # Linear transform for hidden layer
+        self.a1 = self.leaky_relu(self.z1)        # Activation 
+        self.z2 = np.dot(self.a1, self.W2) + self.b2  # Linear transform for output
+        self.a2 = self.sigmoid(self.z2)               # Output activation
         return self.a2
 
     def compute_loss(self, y_true, y_pred):
+        # Binary cross-entropy loss with epsilon 
         eps = 1e-10  # to avoid log(0)
         return -np.mean(y_true * np.log(y_pred + eps) + (1 - y_true) * np.log(1 - y_pred + eps))
 
     def backward(self, X, y_true, learning_rate):
+        # Backpropagation to compute gradients and update weights
         m = X.shape[0]
+
+        # Output layer gradients
         dz2 = self.a2 - y_true
         dW2 = np.dot(self.a1.T, dz2) / m
         db2 = np.sum(dz2, axis=0, keepdims=True) / m
 
+        # Hidden layer gradients
         dz1 = np.dot(dz2, self.W2.T) * self.leaky_relu_derivative(self.z1)
         dW1 = np.dot(X.T, dz1) / m
         db1 = np.sum(dz1, axis=0, keepdims=True) / m
 
-        # Optional: print mean gradients for debugging
-        # print("mean |dW1|", np.mean(np.abs(dW1)), "|dW2|", np.mean(np.abs(dW2)))
-
+        # Update parameters using gradient descent
         self.W1 -= learning_rate * dW1
         self.b1 -= learning_rate * db1
         self.W2 -= learning_rate * dW2
         self.b2 -= learning_rate * db2
 
+
+# --- Optional Training and Evaluation Code ---
 
 # def train(model, X_train, y_train, X_val=None, y_val=None, epochs=50, lr=0.01):
 #     for epoch in range(epochs):

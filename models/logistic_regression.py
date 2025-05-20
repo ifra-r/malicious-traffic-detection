@@ -22,6 +22,7 @@ class LogisticRegressionModel:
     def forward(self, X):
         # X shape: (batch_size, input_dim)
 
+        # Forward pass: compute sigmoid of linear combination
         # computes the weighted sum:
         z = np.dot(X, self.weights) + self.bias             # shape: (batch_size, 1)
 
@@ -31,6 +32,8 @@ class LogisticRegressionModel:
     def backward(self, X, y_true, y_pred): 
         # Returns gradients for weights and bias 
         m = X.shape[0]  # batch size
+
+        # Backward pass: compute gradients of loss w.r.t. weights and bias
         dz = y_pred - y_true       # computes the prediction error for each sample.       # shape: (batch_size, 1)
         dw = np.dot(X.T, dz) / m   # partial derivatives of loss w.r.t. weights.         # shape: (input_dim, 1)
         db = np.sum(dz) / m        # partial derivatives w.r.t bias

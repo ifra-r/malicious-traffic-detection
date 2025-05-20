@@ -1,48 +1,68 @@
+"""
+SimpleMLP: A minimal Multi-Layer Perceptron (MLP) for binary classification, implemented from scratch using NumPy.
+
+This model includes:
+- A single hidden layer with tanh activation
+- An output layer with sigmoid activation
+- Forward and backward propagation logic
+- Parameter updates using gradient descent
+- Binary cross-entropy loss
+- Optional training and evaluation functions (commented for modular use)
+ 
+"""
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
 class SimpleMLP:
     def __init__(self, input_dim, hidden_dim=10):
-        self.W1 = np.random.randn(input_dim, hidden_dim) * 0.01
-        self.b1 = np.zeros((1, hidden_dim))
-        self.W2 = np.random.randn(hidden_dim, 1) * 0.01
-        self.b2 = np.zeros((1, 1))
+        # Initialize weights with small random values and biases with zeros
+        self.W1 = np.random.randn(input_dim, hidden_dim) * 0.01 # Input to hidden layer weights
+        self.b1 = np.zeros((1, hidden_dim)) # Hidden layer biases
+        self.W2 = np.random.randn(hidden_dim, 1) * 0.01 # Hidden to output layer weights
+        self.b2 = np.zeros((1, 1))  # Output layer bias
     
     def sigmoid(self, z):
-        return 1 / (1 + np.exp(-z))
+        return 1 / (1 + np.exp(-z)) # Sigmoid activation for output layer
     
     def forward(self, X):
-        self.Z1 = np.dot(X, self.W1) + self.b1
-        self.A1 = np.tanh(self.Z1)
-        self.Z2 = np.dot(self.A1, self.W2) + self.b2
-        self.A2 = self.sigmoid(self.Z2)
+                # Forward pass: compute activations for hidden and output layers
+        self.Z1 = np.dot(X, self.W1) + self.b1 # Linear transform to hidden layer
+        self.A1 = np.tanh(self.Z1)  # Activation for hidden layer
+        self.Z2 = np.dot(self.A1, self.W2) + self.b2 # Linear transform to output layer
+        self.A2 = self.sigmoid(self.Z2) # Sigmoid for binary output (layer)
         return self.A2
     
+    # Loss function: binary cross-entropy with small epsilon for stability
     def compute_loss(self, y_true, y_pred):
-        epsilon = 1e-8
+        epsilon = 1e-8      # to prevent log(0)
         m = y_true.shape[0]
         loss = - (1/m) * np.sum(y_true * np.log(y_pred + epsilon) + (1 - y_true) * np.log(1 - y_pred + epsilon))
         return loss
     
     def backward(self, X, y_true, y_pred):
+        # Backpropagation: compute gradients of all weights and biases
         m = y_true.shape[0]
-        dZ2 = y_pred - y_true
-        dW2 = (1/m) * np.dot(self.A1.T, dZ2)
-        db2 = (1/m) * np.sum(dZ2, axis=0, keepdims=True)
-        dA1 = np.dot(dZ2, self.W2.T)
-        dZ1 = dA1 * (1 - np.power(self.A1, 2))
-        dW1 = (1/m) * np.dot(X.T, dZ1)
-        db1 = (1/m) * np.sum(dZ1, axis=0, keepdims=True)
+        dZ2 = y_pred - y_true   # Gradient at output
+        dW2 = (1/m) * np.dot(self.A1.T, dZ2) # Grad for W2
+        db2 = (1/m) * np.sum(dZ2, axis=0, keepdims=True) # Grad for b2
+
+        dA1 = np.dot(dZ2, self.W2.T)  # Backprop error to hidden layer
+        dZ1 = dA1 * (1 - np.power(self.A1, 2)) # Derivative of tanh
+        dW1 = (1/m) * np.dot(X.T, dZ1)  # Grad for W1
+        db1 = (1/m) * np.sum(dZ1, axis=0, keepdims=True)  # Grad for b1
         return dW1, db1, dW2, db2
     
     def update_params(self, dW1, db1, dW2, db2, lr):
+        # Gradient descent step to update parameters
         self.W1 -= lr * dW1
         self.b1 -= lr * db1
         self.W2 -= lr * dW2
         self.b2 -= lr * db2
     
     def predict(self, X, threshold=0.5):
+        # Predict labels (0 or 1) based on probability threshold
         probs = self.forward(X)
         return (probs >= threshold).astype(int)
 
@@ -93,5 +113,5 @@ class SimpleMLP:
 #     print("\nTesting...")
 #     evaluate(model, X_test, y_test)
 
-# if __name__ == "__main__":
-#     main()
+# # if __name__ == "__main__":
+# #     main()
